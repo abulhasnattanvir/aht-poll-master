@@ -5,7 +5,7 @@
  * Description: A plugin to create and manage polls.
  * Version: 1.0
  * Author: Abul Hasnat Tanvir
- * Author URI: https://github.com
+ * Author URI: https://github.com/abulhasnattanvir/aht-poll-master
  * Requires at least: 5.6
  * Requires PHP: 8.0
  * Text Domain: aht-poll-master
