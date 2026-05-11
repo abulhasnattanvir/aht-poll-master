@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * Plugin Name: AHT Poll Master
+ * Description: A plugin to create and manage polls.
+ * Version: 1.0
+ * Author: Abul Hasnat Tanvir
+ * Author URI: https://github.com
+ * Requires at least: 5.6
+ * Requires PHP: 8.0
+ * Text Domain: aht-poll-master
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+// Enqueue frontend scripts and styles
+function mpp_enqueue_scripts() {
+    wp_enqueue_script('jquery');
+    
+    // Add versioning for styles and scripts
+    wp_enqueue_style('mppprogress', plugin_dir_url(__FILE__) . 'assets/css/progress-bar.css', array(), filemtime(plugin_dir_path(__FILE__) . 'assets/css/progress-bar.css'));
+    wp_enqueue_script('mpp-progress-bar', plugin_dir_url(__FILE__) . 'assets/js/progress-bar.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'assets/js/progress-bar.js'), true);
+    wp_enqueue_script('mpp-main', plugin_dir_url(__FILE__) . 'assets/js/main.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'assets/js/main.js'), true);
+    wp_enqueue_script('mpp-viewsingle', plugin_dir_url(__FILE__) . 'assets/js/script.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'assets/js/script.js'), true);
+
+    // Localize script to make ajaxurl and nonce available on the front end
+    wp_localize_script('mpp-main', 'mpp_vars', array(
+        'ajaxurl' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('mpp_vote_nonce')
+    ));
+}
+add_action('wp_enqueue_scripts', 'mpp_enqueue_scripts');
+
+// Enqueue admin scripts and styles
+function mpp_enqueue_admin_scripts() {
+    wp_enqueue_style('mppdashboard', plugin_dir_url(__FILE__) . 'assets/css/admin-dashboard.css', array(), filemtime(plugin_dir_path(__FILE__) . 'assets/css/admin-dashboard.css'));
+    wp_enqueue_style('mppcustomstyle', plugin_dir_url(__FILE__) . 'assets/css/dashboard-style.css', array(), filemtime(plugin_dir_path(__FILE__) . 'assets/css/dashboard-style.css'));
+    wp_enqueue_style('mppsingleview', plugin_dir_url(__FILE__) . 'assets/css/style.css', array(), filemtime(plugin_dir_path(__FILE__) . 'assets/css/style.css'));
+}
+add_action('admin_enqueue_scripts', 'mpp_enqueue_admin_scripts');
+
+// Include admin and frontend classes
+require_once plugin_dir_path(__FILE__) . '/admin/class-wp-admin.php';
+require_once plugin_dir_path(__FILE__) . '/class-frontend.php';
