@@ -229,17 +229,26 @@ class MPP_Admin
      */
     public function view_poll_page()
     {
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view
-        if (! isset($_GET['poll_id'], $_GET['_wpnonce'])) {
+        if (
+            ! isset($_GET['poll_id'], $_GET['_wpnonce'])
+        ) {
             return;
         }
 
-        $nonce   = isset($_GET['_wpnonce']) ? wp_unslash($_GET['_wpnonce']) : '';
+        $nonce = sanitize_text_field(
+            wp_unslash($_GET['_wpnonce'])
+        );
+
+        if (
+            ! wp_verify_nonce(
+                $nonce,
+                'view_poll_action'
+            )
+        ) {
+            return;
+        }
+
         $poll_id = absint($_GET['poll_id']);
-
-        if (! wp_verify_nonce($nonce, 'view_poll_action')) {
-            return;
-        }
 
         $this->view_poll($poll_id);
     }
@@ -250,11 +259,28 @@ class MPP_Admin
      */
     public function edit_poll_page()
     {
-        if (!isset($_GET['poll_id'])) {
+        if (
+            ! isset($_GET['poll_id'], $_GET['_wpnonce'])
+        ) {
             return;
         }
 
-        $poll_id = absint($_GET['poll_id']);
+        $nonce = sanitize_text_field(
+            wp_unslash($_GET['_wpnonce'])
+        );
+
+        if (
+            ! wp_verify_nonce(
+                $nonce,
+                'edit_poll_action'
+            )
+        ) {
+            return;
+        }
+
+        $poll_id = absint(
+            wp_unslash($_GET['poll_id'])
+        );
 
         $this->edit_poll($poll_id);
     }

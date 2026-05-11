@@ -9,7 +9,8 @@ if (!is_array($polls)) {
     $polls = array();
 }
 
-// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Search query does not require nonce verification.
 $search_query = isset($_GET['s'])
     ? sanitize_text_field(wp_unslash($_GET['s']))
     : '';
