@@ -229,15 +229,17 @@ class MPP_Admin
      */
     public function view_poll_page()
     {
-        if (
-            ! isset($_GET['poll_id']) ||
-            ! is_numeric($_GET['poll_id'])
-        ) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view
+        if (! isset($_GET['poll_id'], $_GET['_wpnonce'])) {
             return;
         }
 
-        // Sanitize input
+        $nonce   = isset($_GET['_wpnonce']) ? wp_unslash($_GET['_wpnonce']) : '';
         $poll_id = absint($_GET['poll_id']);
+
+        if (! wp_verify_nonce($nonce, 'view_poll_action')) {
+            return;
+        }
 
         $this->view_poll($poll_id);
     }
