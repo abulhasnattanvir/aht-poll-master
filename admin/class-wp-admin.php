@@ -57,7 +57,7 @@ class AHTPOMA_Admin
 
         // Hidden edit page
         add_submenu_page(
-            null,
+            'ahtpoma_polls',                    // ← changed from null
             __('Edit Poll', 'aht-poll-master'),
             __('Edit Poll', 'aht-poll-master'),
             'manage_options',
@@ -67,7 +67,7 @@ class AHTPOMA_Admin
 
         // Hidden view page
         add_submenu_page(
-            null,
+            'ahtpoma_polls',                    // ← changed from null
             __('View Poll', 'aht-poll-master'),
             __('View Poll', 'aht-poll-master'),
             'manage_options',
@@ -176,6 +176,9 @@ class AHTPOMA_Admin
     /**
      * Toggle Status
      */
+    /**
+     * Toggle Status
+     */
     private function toggle_poll_status($poll_id)
     {
         $polls = get_option('ahtpoma_polls', array());
@@ -183,15 +186,61 @@ class AHTPOMA_Admin
         if (isset($polls[$poll_id])) {
             $polls[$poll_id]['status'] = ! empty($polls[$poll_id]['status']) ? 0 : 1;
             update_option('ahtpoma_polls', $polls);
+
+            $status_text = $polls[$poll_id]['status'] ? 'activated' : 'deactivated';
+
+            wp_safe_redirect(
+                add_query_arg(
+                    array(
+                        'page'    => 'ahtpoma_polls',
+                        'message' => 'status_updated',
+                        'status'  => $status_text,
+                    ),
+                    admin_url('admin.php')
+                )
+            );
+            exit;
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=ahtpoma_polls'));
+        wp_safe_redirect(
+            add_query_arg(
+                array(
+                    'page'    => 'ahtpoma_polls',
+                    'message' => 'error',
+                ),
+                admin_url('admin.php')
+            )
+        );
         exit;
     }
+    // private function toggle_poll_status($poll_id)
+    // {
+    //     $polls = get_option('ahtpoma_polls', array());
+
+    //     if (isset($polls[$poll_id])) {
+    //         $polls[$poll_id]['status'] = ! empty($polls[$poll_id]['status']) ? 0 : 1;
+    //         update_option('ahtpoma_polls', $polls);
+    //     }
+
+    //     wp_safe_redirect(admin_url('admin.php?page=ahtpoma_polls'));
+    //     exit;
+    // }
 
     /**
      * Delete Poll
      */
+    // private function delete_poll($poll_id)
+    // {
+    //     $polls = get_option('ahtpoma_polls', array());
+
+    //     if (isset($polls[$poll_id])) {
+    //         unset($polls[$poll_id]);
+    //         update_option('ahtpoma_polls', $polls);
+    //     }
+
+    //     wp_safe_redirect(admin_url('admin.php?page=ahtpoma_polls'));
+    //     exit;
+    // }
     private function delete_poll($poll_id)
     {
         $polls = get_option('ahtpoma_polls', array());
@@ -199,9 +248,28 @@ class AHTPOMA_Admin
         if (isset($polls[$poll_id])) {
             unset($polls[$poll_id]);
             update_option('ahtpoma_polls', $polls);
+
+            wp_safe_redirect(
+                add_query_arg(
+                    array(
+                        'page'    => 'ahtpoma_polls',
+                        'message' => 'deleted',
+                    ),
+                    admin_url('admin.php')
+                )
+            );
+            exit;
         }
 
-        wp_safe_redirect(admin_url('admin.php?page=ahtpoma_polls'));
+        wp_safe_redirect(
+            add_query_arg(
+                array(
+                    'page'    => 'ahtpoma_polls',
+                    'message' => 'error',
+                ),
+                admin_url('admin.php')
+            )
+        );
         exit;
     }
 
@@ -333,7 +401,15 @@ class AHTPOMA_Admin
 
         update_option('ahtpoma_polls', $polls);
 
-        wp_safe_redirect(admin_url('admin.php?page=ahtpoma_polls'));
+        wp_safe_redirect(
+            add_query_arg(
+                array(
+                    'page'    => 'ahtpoma_polls',
+                    'message' => 'updated',
+                ),
+                admin_url('admin.php')
+            )
+        );
         exit;
     }
 

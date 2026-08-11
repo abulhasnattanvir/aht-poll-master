@@ -12,6 +12,33 @@ if (! is_array($polls)) {
 ?>
 
 <div class="wrap">
+    <?php
+    // Show admin notices
+    if (isset($_GET['message'])) {
+        $message = sanitize_text_field(wp_unslash($_GET['message']));
+
+        if ('deleted' === $message) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Poll deleted successfully.', 'aht-poll-master') . '</p></div>';
+        }
+
+        if ('updated' === $message) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Poll updated successfully.', 'aht-poll-master') . '</p></div>';
+        }
+
+        if ('status_updated' === $message) {
+            $status = isset($_GET['status']) ? sanitize_text_field(wp_unslash($_GET['status'])) : '';
+            if ('activated' === $status) {
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Poll activated successfully.', 'aht-poll-master') . '</p></div>';
+            } else {
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Poll deactivated successfully.', 'aht-poll-master') . '</p></div>';
+            }
+        }
+
+        if ('error' === $message) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Something went wrong. Please try again.', 'aht-poll-master') . '</p></div>';
+        }
+    }
+    ?>
     <div class="pool_ques_list">
 
         <div class="create_btn">
