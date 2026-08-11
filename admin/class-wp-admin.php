@@ -213,34 +213,10 @@ class AHTPOMA_Admin
         );
         exit;
     }
-    // private function toggle_poll_status($poll_id)
-    // {
-    //     $polls = get_option('ahtpoma_polls', array());
-
-    //     if (isset($polls[$poll_id])) {
-    //         $polls[$poll_id]['status'] = ! empty($polls[$poll_id]['status']) ? 0 : 1;
-    //         update_option('ahtpoma_polls', $polls);
-    //     }
-
-    //     wp_safe_redirect(admin_url('admin.php?page=ahtpoma_polls'));
-    //     exit;
-    // }
 
     /**
      * Delete Poll
      */
-    // private function delete_poll($poll_id)
-    // {
-    //     $polls = get_option('ahtpoma_polls', array());
-
-    //     if (isset($polls[$poll_id])) {
-    //         unset($polls[$poll_id]);
-    //         update_option('ahtpoma_polls', $polls);
-    //     }
-
-    //     wp_safe_redirect(admin_url('admin.php?page=ahtpoma_polls'));
-    //     exit;
-    // }
     private function delete_poll($poll_id)
     {
         $polls = get_option('ahtpoma_polls', array());
