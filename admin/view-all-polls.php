@@ -1,14 +1,13 @@
 <?php
-if (!defined('ABSPATH')) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
-$polls = get_option('mpp_polls', array());
+$polls = get_option('ahtpoma_polls', array());
 
-if (!is_array($polls)) {
+if (! is_array($polls)) {
     $polls = array();
 }
-
 
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Search query does not require nonce verification.
 $search_query = isset($_GET['s'])
@@ -18,27 +17,24 @@ $search_query = isset($_GET['s'])
 /**
  * FILTER SEARCH FIRST
  */
-if (!empty($search_query)) {
+if (! empty($search_query)) {
     $polls = array_filter($polls, function ($poll) use ($search_query) {
-        return stripos($poll['question'], $search_query) !== false;
+        return isset($poll['question']) && stripos($poll['question'], $search_query) !== false;
     });
 }
 
 /**
  * PAGINATION SETTINGS
  */
-    // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    $current_page = isset($_GET['paged'])
-    ? max(1, intval($_GET['paged']))
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$current_page = isset($_GET['paged'])
+    ? max(1, absint($_GET['paged']))
     : 1;
 
 $polls_per_page = 4;
-
-$total_polls = count($polls);
-
-$total_pages = ceil($total_polls / $polls_per_page);
-
-$start_index = ($current_page - 1) * $polls_per_page;
+$total_polls    = count($polls);
+$total_pages    = ceil($total_polls / $polls_per_page);
+$start_index    = ($current_page - 1) * $polls_per_page;
 
 $paginated_polls = array_slice(
     $polls,
@@ -46,7 +42,6 @@ $paginated_polls = array_slice(
     $polls_per_page,
     true
 );
-
 ?>
 
 <div class="wrap">
@@ -56,7 +51,7 @@ $paginated_polls = array_slice(
     <!-- SEARCH -->
     <form method="get" style="margin-bottom:20px;">
 
-        <input type="hidden" name="page" value="view_all_polls">
+        <input type="hidden" name="page" value="ahtpoma_view_all_polls">
 
         <input class="search_box" type="text" name="s" value="<?php echo esc_attr($search_query); ?>"
             placeholder="<?php esc_attr_e('Search polls...', 'aht-poll-master'); ?>">
@@ -74,18 +69,17 @@ $paginated_polls = array_slice(
     <?php foreach ($paginated_polls as $poll_id => $poll) : ?>
 
     <?php
-            $total_votes = !empty($poll['votes'])
+            $total_votes = ! empty($poll['votes']) && is_array($poll['votes'])
                 ? array_sum($poll['votes'])
                 : 0;
             ?>
 
     <h2>
         <?php echo esc_html__('Q:', 'aht-poll-master'); ?>
-        <?php echo esc_html($poll['question']); ?>
+        <?php echo esc_html($poll['question'] ?? ''); ?>
     </h2>
 
     <table class="wp-list-table widefat fixed striped">
-
         <thead>
             <tr>
                 <th><?php esc_html_e('Option', 'aht-poll-master'); ?></th>
@@ -95,14 +89,13 @@ $paginated_polls = array_slice(
         </thead>
 
         <tbody>
-
-            <?php if (!empty($poll['options'])) : ?>
+            <?php if (! empty($poll['options']) && is_array($poll['options'])) : ?>
 
             <?php foreach ($poll['options'] as $index => $option) : ?>
 
             <?php
                             $votes = isset($poll['votes'][$index])
-                                ? $poll['votes'][$index]
+                                ? absint($poll['votes'][$index])
                                 : 0;
 
                             $percentage = $total_votes > 0
@@ -119,9 +112,7 @@ $paginated_polls = array_slice(
             <?php endforeach; ?>
 
             <?php endif; ?>
-
         </tbody>
-
     </table>
 
     <br>
@@ -134,18 +125,20 @@ $paginated_polls = array_slice(
     <?php if ($total_pages > 1) : ?>
 
     <div class="pagination">
-
         <?php
-            echo wp_kses_post(paginate_links(array(
-                'base'      => add_query_arg('paged', '%#%'),
-                'format'    => '',
-                'current'   => $current_page,
-                'total'     => $total_pages,
-                'prev_text' => __('« Previous', 'aht-poll-master'),
-                'next_text' => __('Next »', 'aht-poll-master'),
-            )));
+            echo wp_kses_post(
+                paginate_links(
+                    array(
+                        'base'      => add_query_arg('paged', '%#%'),
+                        'format'    => '',
+                        'current'   => $current_page,
+                        'total'     => $total_pages,
+                        'prev_text' => __('« Previous', 'aht-poll-master'),
+                        'next_text' => __('Next »', 'aht-poll-master'),
+                    )
+                )
+            );
             ?>
-
     </div>
 
     <?php endif; ?>

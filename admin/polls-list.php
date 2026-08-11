@@ -1,28 +1,26 @@
 <?php
-if (!defined('ABSPATH')) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
 // Retrieve polls from database
-$polls = get_option('mpp_polls', array());
+$polls = get_option('ahtpoma_polls', array());
 
-if (!is_array($polls)) {
+if (! is_array($polls)) {
     $polls = array();
 }
 ?>
 
 <div class="wrap">
-
     <div class="pool_ques_list">
 
         <div class="create_btn">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=mpp_create_poll')); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=ahtpoma_create_poll')); ?>">
                 <?php esc_html_e('Create Poll +', 'aht-poll-master'); ?>
             </a>
         </div>
 
         <table class="wp-list-table widefat fixed striped">
-
             <thead>
                 <tr>
                     <th><?php esc_html_e('SL NO', 'aht-poll-master'); ?></th>
@@ -33,30 +31,21 @@ if (!is_array($polls)) {
             </thead>
 
             <tbody>
-
-                <?php if (!empty($polls)) : ?>
+                <?php if (! empty($polls)) : ?>
 
                 <?php foreach ($polls as $index => $poll) : ?>
 
                 <?php
                         // Skip invalid poll data
-                        if (!is_array($poll)) {
+                        if (! is_array($poll)) {
                             continue;
                         }
 
-                        $question = isset($poll['question'])
-                            ? $poll['question']
-                            : '';
+                        $question = isset($poll['question']) ? $poll['question'] : '';
+                        $options  = isset($poll['options']) && is_array($poll['options']) ? $poll['options'] : array();
+                        $status   = isset($poll['status']) ? absint($poll['status']) : 0;
 
-                        $options = isset($poll['options']) && is_array($poll['options'])
-                            ? $poll['options']
-                            : array();
-
-                        $status = isset($poll['status'])
-                            ? absint($poll['status'])
-                            : 0;
-
-                        $nonce = wp_create_nonce('mpp_poll_action');
+                        $nonce = wp_create_nonce('ahtpoma_poll_action');
 
                         $status_text = $status
                             ? esc_html__('Deactivate', 'aht-poll-master')
@@ -64,7 +53,6 @@ if (!is_array($polls)) {
                         ?>
 
                 <tr>
-
                     <td>
                         <span class="sl_no_cur">
                             <?php echo esc_html($index + 1); ?>
@@ -76,37 +64,24 @@ if (!is_array($polls)) {
                     </td>
 
                     <td class="option_title">
-
                         <span class="option_text">
-
                             <?php
                                     $formatted_options = array();
 
                                     foreach ($options as $key => $option) {
-
-                                        $formatted_options[] =
-                                            chr(65 + $key) .
-                                            '. ' .
-                                            sanitize_text_field($option);
+                                        $formatted_options[] = chr(65 + $key) . '. ' . sanitize_text_field($option);
                                     }
 
-                                    echo esc_html(
-                                        implode(', ', $formatted_options)
-                                    );
+                                    echo esc_html(implode(', ', $formatted_options));
                                     ?>
-
                         </span>
-
                     </td>
 
                     <td>
-
                         <div class="action_btn">
-
                             <div class="dropdown">
-
-                                <button type="button" class="dropbtn"
-                                    onclick="toggleDropdown(event, <?php echo esc_attr($index); ?>)">
+                                <button type="button" class="dropbtn ahtpoma-dropbtn"
+                                    data-index="<?php echo esc_attr($index); ?>">
                                     <?php esc_html_e('Action', 'aht-poll-master'); ?>
                                 </button>
 
@@ -120,34 +95,38 @@ if (!is_array($polls)) {
                                                                     'poll_id'  => $index,
                                                                     '_wpnonce' => $nonce,
                                                                 ),
-                                                                admin_url('admin.php?page=mpp_polls')
+                                                                admin_url('admin.php?page=ahtpoma_polls')
                                                             )
                                                         ); ?>">
-
                                         <?php echo esc_html($status_text); ?>
-
                                     </a>
 
                                     <!-- View -->
                                     <a href="<?php echo esc_url(
-                                                            admin_url(
-                                                                'admin.php?page=mpp_view_poll&poll_id=' . absint($index)
+                                                            add_query_arg(
+                                                                array(
+                                                                    'page'     => 'ahtpoma_view_poll',
+                                                                    'poll_id'  => absint($index),
+                                                                    '_wpnonce' => wp_create_nonce('ahtpoma_view_poll_action'),
+                                                                ),
+                                                                admin_url('admin.php')
                                                             )
                                                         ); ?>">
-
                                         <?php esc_html_e('View', 'aht-poll-master'); ?>
-
                                     </a>
 
                                     <!-- Edit -->
                                     <a href="<?php echo esc_url(
-                                                            admin_url(
-                                                                'admin.php?page=mpp_edit_poll&poll_id=' . absint($index)
+                                                            add_query_arg(
+                                                                array(
+                                                                    'page'     => 'ahtpoma_edit_poll',
+                                                                    'poll_id'  => absint($index),
+                                                                    '_wpnonce' => wp_create_nonce('ahtpoma_edit_poll_action'),
+                                                                ),
+                                                                admin_url('admin.php')
                                                             )
                                                         ); ?>">
-
                                         <?php esc_html_e('Edit', 'aht-poll-master'); ?>
-
                                     </a>
 
                                     <!-- Delete -->
@@ -158,23 +137,17 @@ if (!is_array($polls)) {
                                                                     'poll_id'  => $index,
                                                                     '_wpnonce' => $nonce,
                                                                 ),
-                                                                admin_url('admin.php?page=mpp_polls')
+                                                                admin_url('admin.php?page=ahtpoma_polls')
                                                             )
                                                         ); ?>"
                                         onclick="return confirm('<?php echo esc_js(__('Are you sure you want to delete this poll?', 'aht-poll-master')); ?>');">
-
                                         <?php esc_html_e('Delete', 'aht-poll-master'); ?>
-
                                     </a>
 
                                 </div>
-
                             </div>
-
                         </div>
-
                     </td>
-
                 </tr>
 
                 <?php endforeach; ?>
@@ -182,51 +155,14 @@ if (!is_array($polls)) {
                 <?php else : ?>
 
                 <tr>
-
                     <td colspan="4">
-
                         <?php esc_html_e('No polls found.', 'aht-poll-master'); ?>
-
                     </td>
-
                 </tr>
 
                 <?php endif; ?>
-
             </tbody>
-
         </table>
 
     </div>
-
 </div>
-
-<script>
-function toggleDropdown(event, index) {
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    const dropdown = document.getElementById(
-        'dropdown_' + index
-    );
-
-    if (dropdown) {
-        dropdown.classList.toggle('show');
-    }
-}
-
-window.addEventListener('click', function(event) {
-
-    if (!event.target.matches('.dropbtn')) {
-
-        const dropdowns =
-            document.getElementsByClassName('dropdown-content');
-
-        for (let i = 0; i < dropdowns.length; i++) {
-
-            dropdowns[i].classList.remove('show');
-        }
-    }
-});
-</script>
