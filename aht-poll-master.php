@@ -143,6 +143,14 @@ function ahtpoma_enqueue_admin_scripts($hook)
         wp_add_inline_script('ahtpoma-create-poll', $create_js);
     }
 
+    // Hide Edit and View pages from the menu
+    wp_add_inline_style('ahtpoma-admin-dashboard', '
+    #toplevel_page_ahtpoma_polls .wp-submenu li a[href*="ahtpoma_edit_poll"],
+    #toplevel_page_ahtpoma_polls .wp-submenu li a[href*="ahtpoma_view_poll"] {
+        display: none !important;
+    }
+');
+
     // Polls List page
     if ('toplevel_page_ahtpoma_polls' === $hook) {
         wp_register_script('ahtpoma-polls-list', '', array(), AHTPOMA_VERSION, true);

@@ -1,6 +1,6 @@
 === AHT Poll Master ===
-Contributors: linuxbangla
-Donate link: https://linuxbangla.com/
+Contributors: ahtanvir
+Donate link: https://tawakkulsoft.com
 Tags: polls, voting, survey, shortcode, admin
 Requires at least: 5.6
 Tested up to: 7.0

@@ -4,10 +4,10 @@ if (! defined('ABSPATH')) {
 }
 
 // Get all polls
-$polls = get_option('ahtpoma_polls', array());
+$ahtpoma_polls = get_option('ahtpoma_polls', array());
 
-if (! is_array($polls)) {
-    $polls = array();
+if (! is_array($ahtpoma_polls)) {
+    $ahtpoma_polls = array();
 }
 
 // Handle form submission for new polls
@@ -29,42 +29,42 @@ if (
     }
 
     // Sanitize and validate input
-    $question = isset($_POST['question'])
+    $ahtpoma_question = isset($_POST['question'])
         ? sanitize_text_field(wp_unslash($_POST['question']))
         : '';
 
-    $options = isset($_POST['options']) && is_array($_POST['options'])
+    $ahtpoma_options = isset($_POST['options']) && is_array($_POST['options'])
         ? array_map('sanitize_text_field', wp_unslash($_POST['options']))
         : array();
 
-    $bgcolor = isset($_POST['bgcolor'])
+    $ahtpoma_bgcolor = isset($_POST['bgcolor'])
         ? sanitize_hex_color(wp_unslash($_POST['bgcolor']))
         : '';
 
-    $status = isset($_POST['status']) ? 1 : 0;
+    $ahtpoma_status = isset($_POST['status']) ? 1 : 0;
 
     // Generate a unique poll ID
-    $poll_id = count($polls);
-    while (isset($polls[$poll_id])) {
-        $poll_id++;
+    $ahtpoma_poll_id = count($ahtpoma_polls);
+    while (isset($ahtpoma_polls[$ahtpoma_poll_id])) {
+        $ahtpoma_poll_id++;
     }
 
     // Save the poll
-    $polls[$poll_id] = array(
-        'question' => $question,
-        'options'  => $options,
-        'votes'    => array_fill(0, count($options), 0),
-        'bgcolor'  => $bgcolor,
-        'status'   => $status,
+    $ahtpoma_polls[$ahtpoma_poll_id] = array(
+        'question' => $ahtpoma_question,
+        'options'  => $ahtpoma_options,
+        'votes'    => array_fill(0, count($ahtpoma_options), 0),
+        'bgcolor'  => $ahtpoma_bgcolor,
+        'status'   => $ahtpoma_status,
     );
 
-    update_option('ahtpoma_polls', $polls);
+    update_option('ahtpoma_polls', $ahtpoma_polls);
 
     // Display success message with shortcode
-    $shortcode = '[ahtpoma_poll id="' . $poll_id . '"]';
+    $ahtpoma_shortcode = '[ahtpoma_poll id="' . $ahtpoma_poll_id . '"]';
     echo '<div class="notice notice-success is-dismissible"><p>' .
         esc_html__('Poll created successfully! Use the following shortcode to display the poll:', 'aht-poll-master') .
-        ' <strong>' . esc_html($shortcode) . '</strong></p></div>';
+        ' <strong>' . esc_html($ahtpoma_shortcode) . '</strong></p></div>';
 }
 ?>
 

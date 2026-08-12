@@ -4,41 +4,45 @@ if (! defined('ABSPATH')) {
 }
 
 // Retrieve polls from database
-$polls = get_option('ahtpoma_polls', array());
+$ahtpoma_polls = get_option('ahtpoma_polls', array());
 
-if (! is_array($polls)) {
-    $polls = array();
+if (! is_array($ahtpoma_polls)) {
+    $ahtpoma_polls = array();
 }
 ?>
 
 <div class="wrap">
     <?php
     // Show admin notices
-    if (isset($_GET['message'])) {
-        $message = sanitize_text_field(wp_unslash($_GET['message']));
+    // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    if ( isset( $_GET['message'] ) ) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $ahtpoma_message = sanitize_text_field( wp_unslash( $_GET['message'] ) );
 
-        if ('deleted' === $message) {
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Poll deleted successfully.', 'aht-poll-master') . '</p></div>';
+        if ( 'deleted' === $ahtpoma_message ) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Poll deleted successfully.', 'aht-poll-master' ) . '</p></div>';
         }
 
-        if ('updated' === $message) {
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Poll updated successfully.', 'aht-poll-master') . '</p></div>';
+        if ( 'updated' === $ahtpoma_message ) {
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Poll updated successfully.', 'aht-poll-master' ) . '</p></div>';
         }
 
-        if ('status_updated' === $message) {
-            $status = isset($_GET['status']) ? sanitize_text_field(wp_unslash($_GET['status'])) : '';
-            if ('activated' === $status) {
-                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Poll activated successfully.', 'aht-poll-master') . '</p></div>';
+        if ( 'status_updated' === $ahtpoma_message ) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            $ahtpoma_status = isset( $_GET['status'] ) ? sanitize_text_field( wp_unslash( $_GET['status'] ) ) : '';
+            if ( 'activated' === $ahtpoma_status ) {
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Poll activated successfully.', 'aht-poll-master' ) . '</p></div>';
             } else {
-                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Poll deactivated successfully.', 'aht-poll-master') . '</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Poll deactivated successfully.', 'aht-poll-master' ) . '</p></div>';
             }
         }
 
-        if ('error' === $message) {
-            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Something went wrong. Please try again.', 'aht-poll-master') . '</p></div>';
+        if ( 'error' === $ahtpoma_message ) {
+            echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Something went wrong. Please try again.', 'aht-poll-master' ) . '</p></div>';
         }
     }
     ?>
+
     <div class="pool_ques_list">
 
         <div class="create_btn">
@@ -58,23 +62,23 @@ if (! is_array($polls)) {
             </thead>
 
             <tbody>
-                <?php if (! empty($polls)) : ?>
+                <?php if (! empty($ahtpoma_polls)) : ?>
 
-                <?php foreach ($polls as $index => $poll) : ?>
+                <?php foreach ($ahtpoma_polls as $ahtpoma_index => $ahtpoma_poll) : ?>
 
                 <?php
                         // Skip invalid poll data
-                        if (! is_array($poll)) {
+                        if (! is_array($ahtpoma_poll)) {
                             continue;
                         }
 
-                        $question = isset($poll['question']) ? $poll['question'] : '';
-                        $options  = isset($poll['options']) && is_array($poll['options']) ? $poll['options'] : array();
-                        $status   = isset($poll['status']) ? absint($poll['status']) : 0;
+                        $ahtpoma_question = isset($ahtpoma_poll['question']) ? $ahtpoma_poll['question'] : '';
+                        $ahtpoma_options  = isset($ahtpoma_poll['options']) && is_array($ahtpoma_poll['options']) ? $ahtpoma_poll['options'] : array();
+                        $ahtpoma_status   = isset($ahtpoma_poll['status']) ? absint($ahtpoma_poll['status']) : 0;
 
-                        $nonce = wp_create_nonce('ahtpoma_poll_action');
+                        $ahtpoma_nonce = wp_create_nonce('ahtpoma_poll_action');
 
-                        $status_text = $status
+                        $ahtpoma_status_text = $ahtpoma_status
                             ? esc_html__('Deactivate', 'aht-poll-master')
                             : esc_html__('Activate', 'aht-poll-master');
                         ?>
@@ -82,24 +86,24 @@ if (! is_array($polls)) {
                 <tr>
                     <td>
                         <span class="sl_no_cur">
-                            <?php echo esc_html($index + 1); ?>
+                            <?php echo esc_html($ahtpoma_index + 1); ?>
                         </span>
                     </td>
 
                     <td>
-                        <?php echo esc_html($question); ?>
+                        <?php echo esc_html($ahtpoma_question); ?>
                     </td>
 
                     <td class="option_title">
                         <span class="option_text">
                             <?php
-                                    $formatted_options = array();
+                                    $ahtpoma_formatted_options = array();
 
-                                    foreach ($options as $key => $option) {
-                                        $formatted_options[] = chr(65 + $key) . '. ' . sanitize_text_field($option);
+                                    foreach ($ahtpoma_options as $ahtpoma_key => $ahtpoma_option) {
+                                        $ahtpoma_formatted_options[] = chr(65 + $ahtpoma_key) . '. ' . sanitize_text_field($ahtpoma_option);
                                     }
 
-                                    echo esc_html(implode(', ', $formatted_options));
+                                    echo esc_html(implode(', ', $ahtpoma_formatted_options));
                                     ?>
                         </span>
                     </td>
@@ -108,24 +112,24 @@ if (! is_array($polls)) {
                         <div class="action_btn">
                             <div class="dropdown">
                                 <button type="button" class="dropbtn ahtpoma-dropbtn"
-                                    data-index="<?php echo esc_attr($index); ?>">
+                                    data-index="<?php echo esc_attr($ahtpoma_index); ?>">
                                     <?php esc_html_e('Action', 'aht-poll-master'); ?>
                                 </button>
 
-                                <div id="dropdown_<?php echo esc_attr($index); ?>" class="dropdown-content">
+                                <div id="dropdown_<?php echo esc_attr($ahtpoma_index); ?>" class="dropdown-content">
 
                                     <!-- Toggle Status -->
                                     <a href="<?php echo esc_url(
                                                             add_query_arg(
                                                                 array(
                                                                     'action'   => 'toggle_status',
-                                                                    'poll_id'  => $index,
-                                                                    '_wpnonce' => $nonce,
+                                                                    'poll_id'  => $ahtpoma_index,
+                                                                    '_wpnonce' => $ahtpoma_nonce,
                                                                 ),
                                                                 admin_url('admin.php?page=ahtpoma_polls')
                                                             )
                                                         ); ?>">
-                                        <?php echo esc_html($status_text); ?>
+                                        <?php echo esc_html($ahtpoma_status_text); ?>
                                     </a>
 
                                     <!-- View -->
@@ -133,7 +137,7 @@ if (! is_array($polls)) {
                                                             add_query_arg(
                                                                 array(
                                                                     'page'     => 'ahtpoma_view_poll',
-                                                                    'poll_id'  => absint($index),
+                                                                    'poll_id'  => absint($ahtpoma_index),
                                                                     '_wpnonce' => wp_create_nonce('ahtpoma_view_poll_action'),
                                                                 ),
                                                                 admin_url('admin.php')
@@ -147,7 +151,7 @@ if (! is_array($polls)) {
                                                             add_query_arg(
                                                                 array(
                                                                     'page'     => 'ahtpoma_edit_poll',
-                                                                    'poll_id'  => absint($index),
+                                                                    'poll_id'  => absint($ahtpoma_index),
                                                                     '_wpnonce' => wp_create_nonce('ahtpoma_edit_poll_action'),
                                                                 ),
                                                                 admin_url('admin.php')
@@ -161,8 +165,8 @@ if (! is_array($polls)) {
                                                             add_query_arg(
                                                                 array(
                                                                     'action'   => 'delete',
-                                                                    'poll_id'  => $index,
-                                                                    '_wpnonce' => $nonce,
+                                                                    'poll_id'  => $ahtpoma_index,
+                                                                    '_wpnonce' => $ahtpoma_nonce,
                                                                 ),
                                                                 admin_url('admin.php?page=ahtpoma_polls')
                                                             )

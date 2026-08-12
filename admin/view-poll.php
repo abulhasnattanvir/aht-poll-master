@@ -3,14 +3,14 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-$polls = get_option('ahtpoma_polls', array());
+$ahtpoma_polls = get_option('ahtpoma_polls', array());
 
-if (isset($polls[$poll_id])) :
+if (isset($ahtpoma_polls[$poll_id])) :
 
-    $poll        = $polls[$poll_id];
-    $total_votes = array_sum($poll['votes']);
-    $azRange     = range('A', 'Z');
-    $maxCharLimit = 10;
+    $ahtpoma_poll         = $ahtpoma_polls[$poll_id];
+    $ahtpoma_total_votes  = array_sum($ahtpoma_poll['votes']);
+    $ahtpoma_az_range     = range('A', 'Z');
+    $ahtpoma_max_char_limit = 10;
 ?>
 <div class="wrap">
     <div class="view_single">
@@ -18,7 +18,7 @@ if (isset($polls[$poll_id])) :
             <h2><?php esc_html_e('View Poll', 'aht-poll-master'); ?></h2>
             <p>
                 <strong><?php esc_html_e('Question:', 'aht-poll-master'); ?></strong>
-                <?php echo esc_html($poll['question']); ?>
+                <?php echo esc_html($ahtpoma_poll['question']); ?>
             </p>
             <p>
                 <strong><?php esc_html_e('Options Graph Results:', 'aht-poll-master'); ?></strong>
@@ -27,34 +27,34 @@ if (isset($polls[$poll_id])) :
 
         <div id="chart">
             <ul id="numbers">
-                <?php foreach (array(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0) as $pct) : ?>
-                <li><span><?php echo esc_html($pct); ?>%</span></li>
+                <?php foreach (array(100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0) as $ahtpoma_pct) : ?>
+                <li><span><?php echo esc_html($ahtpoma_pct); ?>%</span></li>
                 <?php endforeach; ?>
             </ul>
 
             <ul id="bars">
-                <?php foreach ($poll['options'] as $index => $option) :
-                        $votes          = isset($poll['votes'][$index]) ? absint($poll['votes'][$index]) : 0;
-                        $percent        = $total_votes > 0 ? ($votes / $total_votes) * 100 : 0;
-                        $truncatedOption = strlen($option) > $maxCharLimit
-                            ? substr($option, 0, $maxCharLimit) . '...'
-                            : $option;
+                <?php foreach ($ahtpoma_poll['options'] as $ahtpoma_index => $ahtpoma_option) :
+                        $ahtpoma_votes           = isset($ahtpoma_poll['votes'][$ahtpoma_index]) ? absint($ahtpoma_poll['votes'][$ahtpoma_index]) : 0;
+                        $ahtpoma_percent         = $ahtpoma_total_votes > 0 ? ($ahtpoma_votes / $ahtpoma_total_votes) * 100 : 0;
+                        $ahtpoma_truncated_option = strlen($ahtpoma_option) > $ahtpoma_max_char_limit
+                            ? substr($ahtpoma_option, 0, $ahtpoma_max_char_limit) . '...'
+                            : $ahtpoma_option;
                     ?>
                 <li>
-                    <div data-percentage="<?php echo esc_attr(round($percent, 2)); ?>" class="bar">
-                        <?php if ($votes > 0) : ?>
+                    <div data-percentage="<?php echo esc_attr(round($ahtpoma_percent, 2)); ?>" class="bar">
+                        <?php if ($ahtpoma_votes > 0) : ?>
                         <p class="vote_pqua">
                             <?php
                                         printf(
                                             /* translators: %d: number of votes */
                                             esc_html__('QV : %d', 'aht-poll-master'),
-                                            $votes
+                                            esc_html($ahtpoma_votes)
                                         );
                                         ?>
                         </p>
                         <?php endif; ?>
                     </div>
-                    <span><?php echo esc_html($azRange[$index] . ' : ' . $truncatedOption); ?></span>
+                    <span><?php echo esc_html($ahtpoma_az_range[$ahtpoma_index] . ' : ' . $ahtpoma_truncated_option); ?></span>
                 </li>
                 <?php endforeach; ?>
             </ul>
@@ -63,7 +63,7 @@ if (isset($polls[$poll_id])) :
         <div class="text_box">
             <p class="total_Vot">
                 <strong><?php esc_html_e('Total Votes:', 'aht-poll-master'); ?></strong>
-                <?php echo esc_html($total_votes); ?>
+                <?php echo esc_html($ahtpoma_total_votes); ?>
             </p>
             <p class="total_per">
                 <strong><?php esc_html_e('Total Percentage:', 'aht-poll-master'); ?></strong> 100%
